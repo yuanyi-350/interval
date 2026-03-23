@@ -140,10 +140,10 @@ lemma approx_cos_sqrt_series (n : ℕ) (x : ℝ) (x0 : 0 ≤ x) (y : Interval)
 @[irreducible] def sinc_sqrt_series_11 := sinc_sqrt_series 11
 @[irreducible] def cos_sqrt_series_11 := cos_sqrt_series 11
 
-@[irreducible] def Interval.sin_small (x : Interval) : Interval :=
+@[irreducible] noncomputable def Interval.sin_small (x : Interval) : Interval :=
   x * sinc_sqrt_series_11.eval x.sqr
 
-@[irreducible] def Interval.cos_small (x : Interval) : Interval :=
+@[irreducible] noncomputable def Interval.cos_small (x : Interval) : Interval :=
   cos_sqrt_series_11.eval x.sqr
 
 @[approx] lemma Interval.approx_sin_small {a : ℝ} {x : Interval} (ax : approx x a) :
@@ -183,7 +183,7 @@ into account extrema reached in between the endpoints.
 @[simp] lemma Interval.approx_pm1 {a : ℝ} : approx pm1 a ↔ a ∈ Icc (-1) 1 := by simp [approx]
 
 /-- `sin (x + π / 2 * d)` for potentially large `x`, via argument reduction, sending `nan → nan` -/
-@[irreducible] def Floating.presin (x : Floating) (d : Fixed 0) : Interval :=
+@[irreducible] noncomputable def Floating.presin (x : Floating) (d : Fixed 0) : Interval :=
   -- Helpful picture:
   --   https://en.wikipedia.org/wiki/Sine_and_cosine#/media/File:Sine_cosine_one_period.svg
   let n := ((x.mul Interval.two_div_pi.lo false).add (.ofRat (1/2) false) false).floor
@@ -266,7 +266,7 @@ lemma Floating.presin_inter_pm1 (x : Floating) (d : Fixed 0) :
   exact ⟨by approx, Real.neg_one_le_sin _, Real.sin_le_one _⟩
 
 /-- `sin (x + π / 2 * d)` for potentially large `x`, via argument reduction -/
-@[irreducible] def Floating.sin (x : Floating) (d : Fixed 0) : Interval :=
+@[irreducible] noncomputable def Floating.sin (x : Floating) (d : Fixed 0) : Interval :=
   (x.presin d).inter Interval.pm1 (x.presin_inter_pm1 d)
 
 /-- `Floating.sin` is conservative -/
@@ -284,7 +284,7 @@ lemma Floating.presin_inter_pm1 (x : Floating) (d : Fixed 0) :
   rw [sin]; simp only [presin_nan, Interval.nan_inter]
 
 /-- `sin (x + π / 2 * d)` for potentially large `x`, via argument reduction -/
-@[irreducible] def Interval.sincos (x : Interval) (d : Bool) : Interval :=
+@[irreducible] noncomputable def Interval.sincos (x : Interval) (d : Bool) : Interval :=
   -- Helpful picture:
   --   https://en.wikipedia.org/wiki/Sine_and_cosine#/media/File:Sine_cosine_one_period.svg
   -- Sin is monotonic on each `[-π/2, π/2] + πn` interval, so figure out `n` for `lo` and `hi`.
@@ -430,10 +430,10 @@ lemma floor_even_iff {n : Floating} (nn : n.floor ≠ nan) :
   rw [Interval.sincos]; simp
 
 /-- `sin x` for potentially large `x`, via argument reduction -/
-@[irreducible] def Interval.sin (x : Interval) : Interval := x.sincos false
+@[irreducible] noncomputable def Interval.sin (x : Interval) : Interval := x.sincos false
 
 /-- `cos x` for potentially large `x`, via argument reduction -/
-@[irreducible] def Interval.cos (x : Interval) : Interval := x.sincos true
+@[irreducible] noncomputable def Interval.cos (x : Interval) : Interval := x.sincos true
 
 /-- `Interval.sin` is conservative -/
 @[approx] lemma Interval.approx_sin {x : Interval} {a : ℝ} (ax : approx x a)
