@@ -76,7 +76,7 @@ via Taylor series, and form `exp x = exp (y + n log 2) = exp y * 2^n` via shifti
 -/
 
 /-- `exp x` for potentially large `x`, via argument reduction -/
-@[irreducible] def Floating.exp (x : Floating) : Interval :=
+@[irreducible] noncomputable def Floating.exp (x : Floating) : Interval :=
   bif x == nan then nan else
   -- We want
   --   `x - n log 2 ∈ [-log 2 / 2, log 2 / 2]`
@@ -88,7 +88,7 @@ via Taylor series, and form `exp x = exp (y + n log 2) = exp y * 2^n` via shifti
   (exp_series_16.eval y).scaleB' n
 
 /-- `exp x` for potentially large `x`, via argument reduction -/
-@[irreducible] def Interval.exp (x : Interval) : Interval :=
+@[irreducible] noncomputable def Interval.exp (x : Interval) : Interval :=
   x.lo.exp ∪ x.hi.exp
 
 /-- `Floating.exp` is conservative -/
