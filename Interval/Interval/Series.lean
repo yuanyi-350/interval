@@ -15,14 +15,14 @@ open scoped Real
 
 /-- Sum an `Interval` Taylor series, spitting out `x^n` and the result.
     For now, we use a slow linear loop. We add smaller terms together first to improve precision. -/
-def taylor_sum' (c : Array Interval) (x p e : Interval) (offset steps : ℕ)
+noncomputable def taylor_sum' (c : Array Interval) (x p e : Interval) (offset steps : ℕ)
     (_ : offset + steps ≤ c.size) : Interval :=
   match steps with
   | 0 => e
   | steps+1 => c[offset]'(by omega) * p + taylor_sum' c x (p * x) e (offset+1) steps (by omega)
 
 /-- Sum an `Interval` Taylor series -/
-@[irreducible] def taylor_sum (c : Array Interval) (x e : Interval) : Interval :=
+@[irreducible] noncomputable def taylor_sum (c : Array Interval) (x e : Interval) : Interval :=
   taylor_sum' c x 1 e 0 c.size (by omega)
 
 /-- `taylor_sum'` is conservative -/
@@ -78,7 +78,7 @@ structure Series where
   error : Floating
 
 /-- Evaluation of a `Series` at a point.  For now, we use a slow linear loop. -/
-@[irreducible] def Series.eval (p : Series) (x : Interval) : Interval :=
+@[irreducible] noncomputable def Series.eval (p : Series) (x : Interval) : Interval :=
   let a := x.abs
   bif a.hi == nan || p.radius < a.hi then nan else
   taylor_sum p.coeffs x ((0 : Interval).grow p.error)
