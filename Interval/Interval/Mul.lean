@@ -140,11 +140,11 @@ variable {x y : Interval} {x' y' : ℝ}
 -/
 
 /-- Multiply two intervals -/
-@[irreducible] def mul (x : Interval) (y : Interval) : Interval :=
+@[irreducible] noncomputable def mul (x : Interval) (y : Interval) : Interval :=
   (x.premul y).mix' (approx_premul x.lo_mem y.lo_mem)
 
 /-- `* = mul` -/
-instance : Mul Interval where
+noncomputable instance : Mul Interval where
   mul (x y : Interval) := x.mul y
 
 /-- `*` definition -/
@@ -157,7 +157,7 @@ instance : ApproxMul Interval ℝ where
     approx
 
 /-- `Interval` approximates `ℝ` as a ring -/
-instance : ApproxRing Interval ℝ where
+noncomputable instance : ApproxRing Interval ℝ where
 
 /-- `mul` propagates `x = nan` -/
 @[simp] lemma nan_mul {y : Interval} : nan * y = nan := by
