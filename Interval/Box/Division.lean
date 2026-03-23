@@ -11,11 +11,11 @@ open scoped Real ComplexConjugate
 namespace Box
 
 /-- `Box / Interval` via reciproval multiplication -/
-@[irreducible] def div_scalar (z : Box) (x : Interval) : Box :=
+@[irreducible] noncomputable def div_scalar (z : Box) (x : Interval) : Box :=
   x⁻¹ • z
 
 /-- `Box` inversion via scalar division -/
-instance : Inv Box where
+noncomputable instance : Inv Box where
   inv z := (star z).div_scalar z.normSq
 
 lemma inv_def (z : Box) : z⁻¹ = (star z).div_scalar z.normSq := rfl
