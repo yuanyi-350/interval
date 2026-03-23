@@ -7,7 +7,7 @@ import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 variable {𝕜 E : Type*} [NontriviallyNormedField 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E]
 variable {f : 𝕜 → E}
 
-lemma iteratedDeriv_mul {n : ℕ} (fc : ContDiff 𝕜 n f) {y : 𝕜} :
+lemma iteratedDeriv_mul' {n : ℕ} (fc : ContDiff 𝕜 n f) {y : 𝕜} :
     iteratedDeriv n (fun x ↦ x • f x) y =
       y • iteratedDeriv n f y + n • iteratedDeriv (n - 1) f y := by
   induction n generalizing f with
@@ -19,7 +19,7 @@ lemma iteratedDeriv_mul {n : ℕ} (fc : ContDiff 𝕜 n f) {y : 𝕜} :
       rw [deriv_fun_smul]
       · simp only [deriv_id'', one_smul, add_comm]
       · exact differentiableAt_fun_id
-      · exact fc.contDiffAt.differentiableAt (by norm_cast)
+      · exact fc.contDiffAt.differentiableAt (by simp)
     nth_rw 1 [iteratedDeriv_succ', ds]
     change iteratedDeriv n (f + _) y = _
     rw [iteratedDeriv_add, h]
@@ -29,5 +29,5 @@ lemma iteratedDeriv_mul {n : ℕ} (fc : ContDiff 𝕜 n f) {y : 𝕜} :
       | 0 => simp only [iteratedDeriv_zero, zero_add, zero_smul, add_zero, one_smul]
       | n+1 => simp only [add_tsub_cancel_right, add_nsmul, one_smul]; abel
     · exact fc.deriv'
-    · exact ContDiff.contDiffAt (fc.of_le (mod_cast (Nat.le_succ _)))
+    · exact ContDiff.contDiffAt (fc.of_le (by simp))
     · exact ContDiff.contDiffAt (ContDiff.smul contDiff_id (fc.deriv'.of_le le_rfl))
