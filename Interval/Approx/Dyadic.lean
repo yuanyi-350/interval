@@ -41,14 +41,15 @@ lemma Dyadic.intCast_one : (1 : ℤ) = (1 : Dyadic) := rfl
 
 @[simp] lemma Dyadic.toRat_shiftRightInt : (x >>> s).toRat = x.toRat / 2 ^ s := by
   induction' x with x t xo
-  · simp only [instHShiftRightInt, Dyadic.shiftRight, toRat_zero', zero_div]
+  · have hs : (0 : Dyadic) >>> s = 0 := by
+      change Dyadic.shiftRight 0 s = 0
+      rfl
+    simp [hs]
   · have two : (2 : ℚ) ≠ 0 := by norm_num
-    simp only [instHShiftRightInt, Dyadic.shiftRight, toRat_ofOdd_eq_mkRat, neg_add_rev,
-      Int.shiftLeft_eq, Nat.shiftLeft_eq, _root_.one_mul, Rat.mkRat_eq_div, Int.cast_mul,
-      Int.cast_pow, Int.cast_ofNat, ← zpow_natCast, Int.ofNat_toNat, Nat.cast_pow, Nat.cast_ofNat,
-      mul_div_assoc, ← zpow_sub₀ two, mul_eq_mul_left_iff, Nat.ofNat_pos, ne_eq, OfNat.ofNat_ne_one,
-      not_false_eq_true, zpow_right_inj₀, Int.cast_eq_zero]
-    omega
+    change Dyadic.toRat (.ofOdd x (t + s) xo) = _; rw [toRat_ofOdd_eq_mul_two_pow, toRat_ofOdd_eq_mul_two_pow, Rat.div_def]
+    rw [show -(t + s) = -t + -s by omega, zpow_add₀ two, Rat.zpow_neg (q := (2 : ℚ)) (n := s)]
+    show (x : ℚ) * (2 ^ (-t) * (2 ^ s)⁻¹) = ((x : ℚ) * 2 ^ (-t)) * (2 ^ s)⁻¹
+    exact (@_root_.mul_assoc ℚ _ (x : ℚ) (2 ^ (-t)) ((2 ^ s)⁻¹)).symm
 
 @[simp] lemma Dyadic.shiftRight_natCast : x >>> (n : ℤ) = x >>> n := rfl
 
@@ -103,14 +104,14 @@ instance : CommRing Dyadic where
       Dyadic.intCast_neg, Dyadic.intCast_one, Dyadic.add_mul, Dyadic.neg_mul, Dyadic.one_mul,
       Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one, Dyadic.neg_add]
   intCast_negSucc n := by
-    simp only [Dyadic.instIntCast, Int.negSucc_eq, neg_add, Dyadic.intCast_add, Dyadic.natCast_succ,
+    simp only [Int.negSucc_eq, neg_add, Dyadic.intCast_add, Dyadic.natCast_succ,
       Dyadic.neg_add, Dyadic.intCast_neg, Dyadic.intCast_one]
     rfl
   npow n x := x.pow n
   npow_zero x := Dyadic.pow_zero _
   npow_succ x n := Dyadic.pow_succ _ _
 
-@[simp] lemma Dyadic.monoidPow_eq_instPowNat : Monoid.toNatPow = instPowNat := rfl
+@[simp] lemma Dyadic.monoidPow_eq_instPowNat : Monoid.toPow = instPowNat := rfl
 
 @[simp] lemma Dyadic.toRat_nonneg (x : Dyadic) : 0 ≤ x.toRat ↔ 0 ≤ x := by
   rw [← Dyadic.toRat_zero, Dyadic.toRat_le_toRat_iff]
