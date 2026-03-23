@@ -26,8 +26,7 @@ lemma deriv_interval_integral_of_contDiff (fc : ContDiff ℝ ⊤ (uncurry f)) (a
     have e : (fun t ↦ f t x) = uncurry f ∘ (fun t ↦ (t,x)) := rfl
     simp only [f']
     rw [← fderiv_apply_one_eq_deriv, e, fderiv_comp]
-    · nth_rw 2 [(hasFDerivAt_prodMk_left _ _).fderiv]
-      simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, ContinuousLinearMap.inl_apply]
+    · simp [(hasFDerivAt_prodMk_left t x).fderiv, ContinuousLinearMap.comp_apply]
     · exact (fc.differentiable (by decide)).differentiableAt
     · simp only [differentiableAt_fun_id, differentiableAt_const, DifferentiableAt.prodMk]
   have dc : Continuous (uncurry f') := by
@@ -38,8 +37,8 @@ lemma deriv_interval_integral_of_contDiff (fc : ContDiff ℝ ⊤ (uncurry f)) (a
   have pn : (closedBall t 1 ×ˢ Icc a b).Nonempty := by use (t,a); simp [ab]
   obtain ⟨m,_,mm⟩ := pc.exists_isMaxOn pn dc.norm.continuousOn
   set c := ‖uncurry f' m‖
-  refine (hasDerivAt_integral_of_dominated_loc_of_deriv_le (𝕜 := ℝ) (bound := fun _ ↦ c) (ε := 1)
-    zero_lt_one ?_ ?_ ?_ ?_ ?_ ?_).2
+  refine (hasDerivAt_integral_of_dominated_loc_of_deriv_le (𝕜 := ℝ) (s := closedBall t 1)
+    (bound := fun _ ↦ c) (Metric.closedBall_mem_nhds t zero_lt_one) ?_ ?_ ?_ ?_ ?_ ?_).2
   · filter_upwards []
     intro t
     exact fc.continuous.along_snd.aestronglyMeasurable
@@ -49,7 +48,7 @@ lemma deriv_interval_integral_of_contDiff (fc : ContDiff ℝ ⊤ (uncurry f)) (a
     filter_upwards []
     intro t tm x xm
     simp only [isMaxOn_iff, mem_prod, Metric.mem_closedBall, mem_Icc, and_imp, Prod.forall] at mm
-    exact mm _ _ xm.le tm.1.le tm.2
+    exact mm _ _ xm tm.1.le tm.2
   · apply MeasureTheory.integrable_const
   · filter_upwards []
     intro x t _
