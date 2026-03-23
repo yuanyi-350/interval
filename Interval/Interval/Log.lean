@@ -117,14 +117,14 @@ set the final precision.
   bif y ≤ untrusted_four_thirds then g else g+1
 
 /-- `log x` for arbitrary `x`, via argument reduction -/
-@[irreducible] def Floating.log (x : Floating) : Interval :=
+@[irreducible] noncomputable def Floating.log (x : Floating) : Interval :=
   bif x ≤ 0 then nan else
   let n := x.untrusted_log_shift
   let y := ((x : Interval).scaleB' (-n)) - 1
   y * log1p_div_series_38.eval y + Interval.log_two.mul_float n
 
 /-- `log x` for arbitrary `x`, via argument reduction -/
-@[irreducible] def Interval.log (x : Interval) : Interval :=
+@[irreducible] noncomputable def Interval.log (x : Interval) : Interval :=
   x.lo.log ∪ x.hi.log
 
 /-- `Floating.log` is conservative -/
