@@ -11,11 +11,11 @@ namespace Interval
 variable {x : Interval} {x' : ℝ}
 
 /-- Hyperbolic sine -/
-@[irreducible] def sinh (x : Interval) : Interval :=
+@[irreducible] noncomputable def sinh (x : Interval) : Interval :=
   (exp x - exp (-x)).div2
 
 /-- Hyperbolic cosine -/
-@[irreducible] def cosh (x : Interval) : Interval :=
+@[irreducible] noncomputable def cosh (x : Interval) : Interval :=
   (exp x + exp (-x)).div2
 
 @[approx] lemma approx_sinh (ax : approx x x') : approx x.sinh (Real.sinh x') := by
