@@ -12,7 +12,7 @@ open scoped Real
 variable {x : Interval} {x' : ℝ}
 
 /-- `sqrt x = x ^ 0.5` -/
-@[irreducible] def Interval.sqrt (x : Interval) : Interval :=
+@[irreducible] noncomputable def Interval.sqrt (x : Interval) : Interval :=
   x ^ (Interval.div2 1)
 
 /-- `Interval.sqrt` is conservative -/
