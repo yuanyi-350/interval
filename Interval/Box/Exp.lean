@@ -14,26 +14,26 @@ variable {z : Box} {z' : ℂ}
 variable {t : Interval} {t' : ℝ}
 
 /-- `exp (t * I)` -/
-@[irreducible] def Interval.cis (t : Interval) : Box := ⟨t.cos, t.sin⟩
+@[irreducible] noncomputable def Interval.cis (t : Interval) : Box := ⟨t.cos, t.sin⟩
 
 /-- `exp z` -/
-@[irreducible] def Box.exp (z : Box) : Box := z.re.exp • z.im.cis
+@[irreducible] noncomputable def Box.exp (z : Box) : Box := z.re.exp • z.im.cis
 
 /-- `sin z` -/
-@[irreducible] def Box.sin (z : Box) : Box :=
+@[irreducible] noncomputable def Box.sin (z : Box) : Box :=
   let a := z.im.exp
   let b := (-z.im).exp
   ⟨z.re.sin * (a + b).div2, z.re.cos * (a - b).div2⟩
 
 /-- `cos z` -/
-@[irreducible] def Box.cos (z : Box) : Box :=
+@[irreducible] noncomputable def Box.cos (z : Box) : Box :=
   let a := z.im.exp
   let b := (-z.im).exp
   ⟨z.re.cos * (a + b).div2, -z.re.sin * (a - b).div2⟩
 
 -- Hyperbolic `sin` and `cos`
-@[irreducible] def Box.sinh (z : Box) : Box := z.div_I.sin.mul_I
-@[irreducible] def Box.cosh (z : Box) : Box := z.mul_I.cos
+@[irreducible] noncomputable def Box.sinh (z : Box) : Box := z.div_I.sin.mul_I
+@[irreducible] noncomputable def Box.cosh (z : Box) : Box := z.mul_I.cos
 
 @[approx] lemma Interval.approx_cis (m : approx t t') : approx t.cis (t' * Complex.I).exp := by
   rw [Complex.exp_eq_exp_re_mul_sin_add_cos, Interval.cis]
