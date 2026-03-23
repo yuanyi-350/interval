@@ -19,7 +19,7 @@ lemma fderiv_fderiv_comm {f : E × F → G} {z : E × F} {dx : E} {dy : F} (sf :
   set f' := fderiv ℝ f
   set f'' := fderiv ℝ f' z
   have h1 : ∀ z, HasFDerivAt f (f' z) z :=
-    fun z ↦ (sf.hasStrictFDerivAt (by norm_num)).hasFDerivAt
+    fun z ↦ (sf.hasStrictFDerivAt (by decide)).hasFDerivAt
   have h2 : HasFDerivAt f' f'' z :=
     ((sf.fderiv_right (m := 1) (by norm_num)).hasStrictFDerivAt (by norm_num)).hasFDerivAt
   have h := second_derivative_symmetric_of_eventually (.of_forall h1) h2 (0,dy) (dx,0)
