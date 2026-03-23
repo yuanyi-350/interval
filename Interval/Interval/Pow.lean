@@ -15,10 +15,10 @@ open scoped Real
 variable {x y : Interval} {x' y' : ℝ} {n : ℕ}
 
 /-- `x^y = exp (x.log * y)` -/
-@[irreducible] def Interval.pow (x : Interval) (y : Interval) : Interval :=
+@[irreducible] noncomputable def Interval.pow (x : Interval) (y : Interval) : Interval :=
   (x.log * y).exp
 
-instance : Pow Interval Interval := ⟨Interval.pow⟩
+noncomputable instance : Pow Interval Interval := ⟨Interval.pow⟩
 
 lemma Interval.pow_def {x y : Interval} : x ^ y = (x.log * y).exp := by
   trans x.pow y
@@ -54,13 +54,13 @@ lemma Interval.pow_def {x y : Interval} : x ^ y = (x.log * y).exp := by
 -/
 
 /-- For use within `Interval.powNat` for large `n` (not very optimised) -/
-@[irreducible] def Floating.powNatSlow (x : Floating) (n : ℕ) : Interval :=
+@[irreducible] noncomputable def Floating.powNatSlow (x : Floating) (n : ℕ) : Interval :=
   bif n == 0 then 1 else
   let p := (x.abs : Interval) ^ (n : Interval)
   bif n % 2 == 1 ∧ x < 0 then -p else p
 
 /-- Special case low powers, and use `Floating.powNatSlow` for larger `n` -/
-@[irreducible] def Interval.powNat (x : Interval) (n : ℕ) : Interval := match n with
+@[irreducible] noncomputable def Interval.powNat (x : Interval) (n : ℕ) : Interval := match n with
   | 0 => 1
   | 1 => x
   | 2 => x.sqr
@@ -70,7 +70,7 @@ lemma Interval.pow_def {x y : Interval} : x ^ y = (x.log * y).exp := by
     let p := x.lo.powNatSlow n ∪ x.hi.powNatSlow n
     bif x.lo < 0 && 0 ≤ x.hi && n % 2 = 0 then 0 ∪ p else p
 
-instance : Pow Interval ℕ := ⟨Interval.powNat⟩
+noncomputable instance : Pow Interval ℕ := ⟨Interval.powNat⟩
 lemma Interval.powNat_def {x : Interval} {n : ℕ} : x ^ n = x.powNat n := rfl
 
 /-- `Floating.powNatSlow` is conservative -/
@@ -159,11 +159,11 @@ lemma Interval.powNat_def {x : Interval} {n : ℕ} : x ^ n = x.powNat n := rfl
 ### `Interval ^ ℤ` powers
 -/
 
-@[irreducible] def Interval.powInt (x : Interval) (n : ℤ) : Interval :=
+@[irreducible] noncomputable def Interval.powInt (x : Interval) (n : ℤ) : Interval :=
   let p := x ^ n.natAbs
   bif n < 0 then p.inv else p
 
-instance : Pow Interval ℤ := ⟨Interval.powInt⟩
+noncomputable instance : Pow Interval ℤ := ⟨Interval.powInt⟩
 lemma Interval.powInt_def {x : Interval} {n : ℤ} : x ^ n = x.powInt n := rfl
 
 /-- `Interval.powInt` is conservative -/
