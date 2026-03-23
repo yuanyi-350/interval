@@ -173,7 +173,7 @@ lemma valid_inv_region {x : Floating}
 
 /-- One step of Newton's method for the reciprocal.
     We trust that `1/x ∈ r`, but do not trust the guess `c`. -/
-@[irreducible] def inv_step' (x : Floating) (r : Interval) (c : Floating) : Interval :=
+@[irreducible] noncomputable def inv_step' (x : Floating) (r : Interval) (c : Floating) : Interval :=
   -- `r ∩ (c + r (1 - x c))`, where `x ∈ [1/2,1]`, `r,c ∈ [1,2]`
   c + r * (1 - Interval.float_mul_float x c)
 
@@ -199,13 +199,13 @@ lemma valid_inv_region {x : Floating}
 
 /-- One step of Newton's method for the reciprocal.
     We trust that `1/x ∈ r`, but do not trust the guess `c`. -/
-@[irreducible] def inv_step (x : Floating) (r : Around x.val⁻¹) (c : Floating) (x0 : 0 < x.val) :
+@[irreducible] noncomputable def inv_step (x : Floating) (r : Around x.val⁻¹) (c : Floating) (x0 : 0 < x.val) :
     Around x.val⁻¹ :=
   r ∩ ⟨inv_step' x r.i c, approx_inv_step' c x0 r.mem⟩
 
 /-- Floating point interval reciprocal using Newton's method.
     We assume `x⁻¹ ∈ approx r`. -/
-@[irreducible] def _root_.Floating.inv_pos (x : Floating) (x0 : 0 < x.val) :
+@[irreducible] noncomputable def _root_.Floating.inv_pos (x : Floating) (x0 : 0 < x.val) :
     Around x.val⁻¹ :=
   -- Three steps of Newton's method to produce a tight, conservative interval.
   -- Probably two is enough, but I'm lazy.
@@ -215,11 +215,11 @@ lemma valid_inv_region {x : Floating}
   inv_step x r2 r2.i.lo x0
 
 /-- `Interval` reciprocal of a positive interval -/
-@[irreducible] def inv_pos (x : Interval) (x0 : 0 < x.lo.val) : Interval :=
+@[irreducible] noncomputable def inv_pos (x : Interval) (x0 : 0 < x.lo.val) : Interval :=
   (x.hi.inv_pos (lt_of_lt_of_le x0 x.le)).i ∪ (x.lo.inv_pos x0).i
 
 /-- `Interval` reciprocal using Newton's method. -/
-@[irreducible] def inv (x : Interval) : Interval :=
+@[irreducible] noncomputable def inv (x : Interval) : Interval :=
   if z : x.zero_mem then nan else
   let r := x.abs.inv_pos (by
     simp only [zero_mem_eq, decide_eq_true_eq] at z
@@ -227,7 +227,7 @@ lemma valid_inv_region {x : Floating}
   bif x.lo.n.isNeg then -r else r
 
 /-- `x⁻¹ = inv x` -/
-instance : Inv Interval where inv := inv
+noncomputable instance : Inv Interval where inv := inv
 
 lemma inv_def (x : Interval) : x⁻¹ = inv x := rfl
 
@@ -276,7 +276,7 @@ noncomputable instance : ApproxInv Interval ℝ where
 -/
 
 /-- `Interval` division via reciproval multiplication -/
-instance : Div Interval where
+noncomputable instance : Div Interval where
   div x y := x * y⁻¹
 
 lemma div_def (x y : Interval) : x / y = x * y⁻¹ := rfl
