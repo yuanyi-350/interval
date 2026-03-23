@@ -14,7 +14,7 @@ open scoped Topology
 
 variable {𝕜 : Type} [NontriviallyNormedField 𝕜]
 
-@[bound] lemma norm_sub_norm_le_norm_add {E : Type*} [SeminormedAddGroup E] (x y : E) :
+@[bound] lemma norm_sub_norm_le_norm_add {E : Type*} [SeminormedAddCommGroup E] (x y : E) :
     ‖x‖ - ‖y‖ ≤ ‖x + y‖ := by simpa using norm_sub_norm_le x (-y)
 
 attribute [bound] norm_add_le
@@ -61,7 +61,9 @@ theorem lhopital_field {f g : 𝕜 → 𝕜} {a f' g' : 𝕜} (df : HasDerivAt f
     contrapose lo
     simp only [lo, norm_zero, ge_iff_le, not_le]
     bound
-  calc ‖f x / g x - f' / g'‖
+  calc ‖-(f x / g x) + f' / g'‖
+    _ = ‖f x / g x - f' / g'‖ := by
+      simpa [sub_eq_add_neg, add_comm] using (norm_sub_rev (f x / g x) (f' / g')).symm
     _ = ‖(f x - y * f') / g x + (y * f' / g x - f' / g')‖ := by ring_nf
     _ ≤ ‖(f x - y * f') / g x‖ + ‖y * f' / g x - f' / g'‖ := by bound
     _ = ‖(f x - y * f')‖ / ‖g x‖ + ‖y * f' / g x - f' / g'‖ := by simp only [norm_div]
